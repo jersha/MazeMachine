@@ -129,31 +129,47 @@ def ColumnssSelect(input_image, top_borderin, bottom_borderin, left_borderin, ri
             selectedcolumns = np.hstack((selectedcolumns, np.array(pixel_LR)))
     return selectedcolumns
 
-def ShortlistedRows(selectedrows, sizeBH):
-    sizeBH_half = sizeBH // 2
+def ShortlistedRows(selectedrows, sizeBV_half, top_border, top_borderin, bottom_border, bottom_borderin):
     shortlistedrows_array = np.array([], dtype = np.int64)
-    #shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(selectedrows[0] - sizeBH_half)))
-    shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(selectedrows[0] + sizeBH_half)))
+    shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(top_border + sizeBV_half)))
+    shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(top_borderin + sizeBV_half)))
+    shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(selectedrows[0] + sizeBV_half)))
     size = int(selectedrows.shape[0]) - 1
     for i in range(1, size):
         if(((selectedrows[i] - selectedrows[i - 1]) > 2) and ((selectedrows[i] + 1) == selectedrows[i + 1])):
-            #shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(selectedrows[i - 1] + sizeBH_half)))
-            shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(selectedrows[i] - sizeBH_half)))
-            shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(selectedrows[i] + sizeBH_half)))
+            shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(selectedrows[i] - sizeBV_half)))
+            shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(selectedrows[i] + sizeBV_half)))
+    shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(bottom_borderin - sizeBV_half)))
+    shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(bottom_border - sizeBV_half)))
     return shortlistedrows_array
 
-def ShortlistedColumns(selectedcolumns, sizeBV):
-    sizeBV_half = sizeBV // 2
+def ShortlistedColumns(selectedcolumns, sizeBH_half, left_border, left_borderin, right_border, right_borderin):
     shortlistedcolumn_array = np.array([], dtype = np.int64)
-    #shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(selectedcolumns[0] - sizeBV_half)))
-    shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(selectedcolumns[0] + sizeBV_half)))
+    shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(left_border + sizeBH_half)))
+    shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(left_borderin + sizeBH_half)))
+    shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(selectedcolumns[0] + sizeBH_half)))
     size = int(selectedcolumns.shape[0]) - 1
     for i in range(1, size):
         if((selectedcolumns[i] - selectedcolumns[i - 1]) > 2 and ((selectedcolumns[i] + 1) == selectedcolumns[i + 1])):
-            #shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(selectedcolumns[i - 1] + sizeBV_half)))
-            shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(selectedcolumns[i] - sizeBV_half)))
-            shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(selectedcolumns[i] + sizeBV_half)))
+            shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(selectedcolumns[i] - sizeBH_half)))
+            shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(selectedcolumns[i] + sizeBH_half)))
+    shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(right_borderin - sizeBH_half)))
+    shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(right_border - sizeBH_half)))
     return shortlistedcolumn_array
+    
+def CreateImage(input_image, shortlistedrows, shortlistedcolumns):
+    finalimage = np.array([], dtype = np.int64)
+    first = 1
+    for shortlistedrow in shortlistedrows:
+        tempimage = np.array([], dtype = np.int64)
+        for shortlistedcolumn in shortlistedcolumns:
+            tempimage = np.hstack((tempimage, np.array(input_image[shortlistedrow][shortlistedcolumn])))
+        if(first == 1):
+            finalimage = np.hstack((finalimage, tempimage))
+            first = 0
+        else:
+            finalimage = np.vstack((finalimage, tempimage))
+    return finalimage
     
 def Print_details(top_border, bottom_border, left_border, right_border, sizeBV, sizeBH):
     print('top_border = ', top_border)
