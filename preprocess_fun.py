@@ -132,12 +132,12 @@ def ColumnssSelect(input_image, top_borderin, bottom_borderin, left_borderin, ri
 def ShortlistedRows(selectedrows, sizeBH):
     sizeBH_half = sizeBH // 2
     shortlistedrows_array = np.array([], dtype = np.int64)
-    shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(selectedrows[0] - sizeBH_half)))
+    #shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(selectedrows[0] - sizeBH_half)))
     shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(selectedrows[0] + sizeBH_half)))
     size = int(selectedrows.shape[0]) - 1
     for i in range(1, size):
         if(((selectedrows[i] - selectedrows[i - 1]) > 2) and ((selectedrows[i] + 1) == selectedrows[i + 1])):
-            shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(selectedrows[i - 1] + sizeBH_half)))
+            #shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(selectedrows[i - 1] + sizeBH_half)))
             shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(selectedrows[i] - sizeBH_half)))
             shortlistedrows_array = np.hstack((shortlistedrows_array, np.array(selectedrows[i] + sizeBH_half)))
     return shortlistedrows_array
@@ -145,12 +145,12 @@ def ShortlistedRows(selectedrows, sizeBH):
 def ShortlistedColumns(selectedcolumns, sizeBV):
     sizeBV_half = sizeBV // 2
     shortlistedcolumn_array = np.array([], dtype = np.int64)
-    shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(selectedcolumns[0] - sizeBV_half)))
+    #shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(selectedcolumns[0] - sizeBV_half)))
     shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(selectedcolumns[0] + sizeBV_half)))
     size = int(selectedcolumns.shape[0]) - 1
     for i in range(1, size):
         if((selectedcolumns[i] - selectedcolumns[i - 1]) > 2 and ((selectedcolumns[i] + 1) == selectedcolumns[i + 1])):
-            shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(selectedcolumns[i - 1] + sizeBV_half)))
+            #shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(selectedcolumns[i - 1] + sizeBV_half)))
             shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(selectedcolumns[i] - sizeBV_half)))
             shortlistedcolumn_array = np.hstack((shortlistedcolumn_array, np.array(selectedcolumns[i] + sizeBV_half)))
     return shortlistedcolumn_array
