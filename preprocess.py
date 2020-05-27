@@ -9,54 +9,73 @@ top_border = 0
 bottom_border = 0
 left_border = 0
 right_border = 0
-sizeB = 0
-sizeW = 0
+sizeBV = 0
+sizeBH = 0
+selectedrows = np.array([], dtype = np.int64)
+selectedcolumns = np.array([], dtype = np.int64)
+shortlistedrows = np.array([], dtype = np.int64)
+shortlistedcolumns = np.array([], dtype = np.int64)
+finalimage = np.array([], dtype = np.int64)
 
 blackwhite_image = BlackWhite(image)
-top_border, bottom_border, left_border, right_border = FindLB(blackwhite_image)
+top_border, bottom_border, left_border, right_border = FindBorder(blackwhite_image)
 if(top_border == -1 or bottom_border == -1 or left_border == -1 or right_border == -1):
     print('Error:Not able to find the border')
     exit()
-else:
-    print('top_border = ', top_border,'\n',
-          'bottom_border = ', bottom_border,'\n',
-          'left_border = ', left_border,'\n',
-          'right_border = ', right_border)
 
-sizeB = FindSizeB(blackwhite_image, top_border)
-if(sizeB == -1):
+sizeBV, sizeBH = FindSizeB(blackwhite_image, top_border, bottom_border, left_border, right_border)
+sizeBV_half = sizeBV // 2
+sizeBH_half = sizeBH // 2
+
+if(sizeBV == -1 or sizeBH == -1):
     print('Error:Not able to find the size of Black')
     exit()
-else:
-    print('SizeBlack = ', sizeB)
-    
-sizeW = FindSizeW(blackwhite_image, top_border)
-if(sizeW == -1):
-    print('Error:Not able to find the size of White')
-    exit()
-else:
-    print('SizeWhite = ', sizeW,'\n')
-    
-horizontalstart = left_border + (sizeB // 2)
-verticalstart = top_border + (sizeB // 2)
 
-temp_buffer = np.array([])
-image_buffer = np.array([])
-horizontalposition = horizontalstart
-verticalposition = verticalstart
+top_borderin = top_border + sizeBV
+bottom_borderin = bottom_border - sizeBV
+left_borderin = left_border + sizeBH
+right_borderin = right_border - sizeBH
+selectedrows = RowsSelect(blackwhite_image, top_borderin, bottom_borderin, 
+                          left_borderin, right_borderin, sizeBH)
+selectedcolumns = ColumnssSelect(blackwhite_image, top_borderin, bottom_borderin, 
+                                 left_borderin, right_borderin, sizeBV)
+
+shortlistedrows = np.hstack((shortlistedrows, np.array(top_border + sizeBV_half)))
+shortlistedrows = np.hstack((shortlistedrows, np.array(top_borderin + sizeBV_half)))
+shortlistedrows_temp = ShortlistedRows(selectedrows, sizeBH)
+shortlistedrows = np.hstack((shortlistedrows, shortlistedrows_temp))
+shortlistedrows = np.hstack((shortlistedrows, np.array(bottom_borderin - sizeBV_half)))
+shortlistedrows = np.hstack((shortlistedrows, np.array(bottom_border - sizeBV_half)))
+
+shortlistedcolumns = np.hstack((shortlistedcolumns, np.array(left_border + sizeBH_half)))
+shortlistedcolumns = np.hstack((shortlistedcolumns, np.array(left_borderin + sizeBH_half)))
+shortlistedcolumns_temp = ShortlistedColumns(selectedcolumns, sizeBV)
+shortlistedcolumns = np.hstack((shortlistedcolumns, shortlistedcolumns_temp))
+shortlistedcolumns = np.hstack((shortlistedcolumns, np.array(right_borderin - sizeBH_half)))
+shortlistedcolumns = np.hstack((shortlistedcolumns, np.array(right_border - sizeBH_half)))
+
 first = 1
-while verticalposition < bottom_border:
-    while horizontalposition < right_border:
-        temp_buffer = np.hstack((temp_buffer, np.array(blackwhite_image[verticalposition][horizontalposition])))
-        horizontalposition += sizeB
+for shortlistedrow in shortlistedrows:
+    tempimage = np.array([], dtype = np.int64)
+    for shortlistedcolumn in shortlistedcolumns:
+        tempimage = np.hstack((tempimage, np.array(blackwhite_image[shortlistedrow][shortlistedcolumn])))
     if(first == 1):
-        image_buffer = np.hstack((image_buffer, temp_buffer))
+        finalimage = np.hstack((finalimage, tempimage))
         first = 0
     else:
-        image_buffer = np.vstack((image_buffer, temp_buffer))
-    temp_buffer = np.array([])
-    horizontalposition = horizontalstart
-    verticalposition += sizeB
-
-cv2.imwrite('output.png', np.asarray(image_buffer))
+        finalimage = np.vstack((finalimage, tempimage))
     
+cv2.imwrite('output.png', np.asarray(finalimage))
+
+
+
+
+
+
+
+
+
+
+
+
+
