@@ -3,8 +3,6 @@ import numpy as np
 from preprocess_fun import *
         
 image = cv2.imread('maze.jpg')
-cv2.imwrite('image.jpg', image, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
-image = cv2.imread('image.jpg')
 top_border = 0
 bottom_border = 0
 left_border = 0
@@ -43,8 +41,12 @@ shortlistedrows = ShortlistedRows(selectedrows, sizeBV_half, top_border, top_bor
 shortlistedcolumns = ShortlistedColumns(selectedcolumns, sizeBH_half, left_border, left_borderin, right_border, right_borderin)
 
 finalimage = CreateImage(blackwhite_image, shortlistedrows, shortlistedcolumns)
-cv2.imwrite('output.png', np.asarray(finalimage))
+cv2.imwrite('output.jpg', np.asarray(finalimage))
 
+start_row, start_column, end_row, end_column = FindEnEx(finalimage)
+if(start_row == -1 or start_column == -1 or end_row == -1 or end_column == -1):
+    print('Error:Not able to find entry and exit')
+    exit()
 
 
 

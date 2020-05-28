@@ -171,6 +171,43 @@ def CreateImage(input_image, shortlistedrows, shortlistedcolumns):
             finalimage = np.vstack((finalimage, tempimage))
     return finalimage
     
+def FindEnEx(finalimage):
+    start_row = -1
+    start_column = -1
+    end_row = -1
+    end_column = -1
+    input_height, input_width = finalimage.shape
+    row_no = 0
+    for column_no in range(0, input_width - 1):
+        if(finalimage[row_no][column_no] == 255):
+            start_row = row_no
+            start_column = column_no
+            break
+    
+    if(start_row == -1):
+        column_no = 0
+        for row_no in range(0, input_height - 1):
+            if(finalimage[row_no][column_no] == 255):
+                start_row = row_no
+                start_column = column_no
+                break
+    row_no = input_height - 1    
+    for column_no in range(0, input_width - 1):
+        if(finalimage[row_no][column_no] == 255):
+            end_row = row_no
+            end_column = column_no
+            break
+    
+    if(end_row == -1):
+        column_no = input_width - 1
+        for row_no in range(0, input_height - 1):
+            if(finalimage[row_no][column_no] == 255):
+                end_row = row_no
+                end_column = column_no
+                break
+    
+    return start_row, start_column, end_row, end_column
+    
 def Print_details(top_border, bottom_border, left_border, right_border, sizeBV, sizeBH):
     print('top_border = ', top_border)
     print('bottom_border = ', bottom_border)
