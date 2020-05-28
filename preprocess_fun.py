@@ -4,7 +4,7 @@ from sys import exit
 
 def BlackWhite(input_image):
     grey_image = cv2.cvtColor(input_image, cv2.COLOR_BGR2GRAY)
-    (thresh, output_image) = cv2.threshold(grey_image, 50, 255, cv2.THRESH_BINARY)
+    (thresh, output_image) = cv2.threshold(grey_image, 150, 255, cv2.THRESH_BINARY)
     return output_image
 
 def FindBorder(input_image):

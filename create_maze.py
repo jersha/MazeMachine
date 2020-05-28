@@ -1,5 +1,7 @@
 # df_maze.py
 import random
+from svglib.svglib import svg2rlg
+from reportlab.graphics import renderPM
 
 # Create a maze using the depth-first algorithm described at                    
 # https://scipython.com/blog/making-a-maze/                                     
@@ -170,3 +172,5 @@ ix, iy = 0, 0
 maze = Maze(nx, ny, ix, iy)
 maze.make_maze()
 maze.write_svg('maze.svg')
+drawing = svg2rlg("maze.svg")
+renderPM.drawToFile(drawing, "maze.jpg", fmt="JPG")

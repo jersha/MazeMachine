@@ -5,11 +5,12 @@ from preprocess_fun import *
 
 def BlackWhite(input_image):
     grey_image = cv2.cvtColor(input_image, cv2.COLOR_BGR2GRAY)
-    (thresh, output_image) = cv2.threshold(grey_image, 50, 255, cv2.THRESH_BINARY)
+    (thresh, output_image) = cv2.threshold(grey_image, 150, 255, cv2.THRESH_BINARY)
     return output_image
 
-image = cv2.imread('output.jpg')
+image = cv2.imread('output1.jpg')
 maze = BlackWhite(image) // 255
+print(maze[27][76], maze[27][0])
 maze = 1 - maze
 
 input_height, input_width = maze.shape
@@ -23,7 +24,7 @@ solution = [[0]*SIZE for _ in range(SIZE)]
 def solvemaze(r, c):
     #if destination is reached, maze is solved
     #destination is the last cell(maze[SIZE-1][SIZE-1])
-    if (r==80) and (c==73):
+    if (r==31) and (c==55):
         solution[r][c] = 1;
         return True;
     #checking if we can visit in this cell or not
@@ -50,14 +51,10 @@ def solvemaze(r, c):
         return False;
     return 0;
 
-if(solvemaze(0,1)):
-    solution = solution * 255
-    for column in range(0, input_width - 1):
-        for row in range(0, input_height - 1):
-            if(solution[row][column] == 1):
-                image[row][column] = 128
+
+if(solvemaze(0,30)):
                     
-    arr = np.array(image) 
+    arr = np.array(solution) 
     cv2.imwrite('output2.jpg', np.asarray(arr))
 else:
     print ("No solution")
