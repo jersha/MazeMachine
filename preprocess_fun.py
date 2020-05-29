@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from sys import exit
-
+    
 def BlackWhite(input_image):
     grey_image = cv2.cvtColor(input_image, cv2.COLOR_BGR2GRAY)
     (thresh, output_image) = cv2.threshold(grey_image, 150, 255, cv2.THRESH_BINARY)
@@ -50,7 +50,11 @@ def FindBorder(input_image):
         right_border_array = np.hstack((right_border_array, np.array(pixel_RL)))
     right_border = np.bincount(right_border_array).argmax() 
     
-    return top_border, bottom_border, left_border, right_border
+    if(top_border == -1 or bottom_border == -1 or left_border == -1 or right_border == -1):
+        print('Error:Not able to find the border')
+        exit()
+    else:
+        return top_border, bottom_border, left_border, right_border
 
 def FindSizeB(input_image, top_border, bottom_border, left_border, right_border):
     input_height, input_width = input_image.shape
@@ -80,8 +84,12 @@ def FindSizeB(input_image, top_border, bottom_border, left_border, right_border)
                 break
         black_size_arrayH = np.hstack((black_size_arrayH, np.array(count)))
     black_sizeH = np.bincount(black_size_arrayH).argmax()
-        
-    return black_sizeV, black_sizeH
+    
+    if(black_sizeV == -1 or black_sizeH == -1):
+        print('Error:Not able to find the size of Black')
+        exit()
+    else:
+        return black_sizeV, black_sizeH
 
 def RowsSelect(input_image, top_borderin, bottom_borderin, left_borderin, right_borderin, sizeBH):
     selectedrows = np.array([], dtype = np.int64)
@@ -205,8 +213,11 @@ def FindEnEx(finalimage):
                 end_row = row_no
                 end_column = column_no
                 break
-    
-    return start_row, start_column, end_row, end_column
+    if(start_row == -1 or start_column == -1 or end_row == -1 or end_column == -1):
+        print('Error:Not able to find entry and exit')
+        exit()
+    else:
+        return start_row, start_column, end_row, end_column
     
 def Print_details(top_border, bottom_border, left_border, right_border, sizeBV, sizeBH):
     print('top_border = ', top_border)

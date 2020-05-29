@@ -171,6 +171,6 @@ ix, iy = 0, 0
 
 maze = Maze(nx, ny, ix, iy)
 maze.make_maze()
-maze.write_svg('maze.svg')
-drawing = svg2rlg("maze.svg")
-renderPM.drawToFile(drawing, "maze.jpg", fmt="JPG")
+maze.write_svg('inputimage.svg')
+drawing = svg2rlg("inputimage.svg")
+renderPM.drawToFile(drawing, "inputimage.jpg", fmt="JPG")

@@ -2,27 +2,17 @@ import cv2
 import numpy as np
 from preprocess_fun import *
 
-image = cv2.imread('maze.jpg')
+inputimage = cv2.imread('inputimage.jpg')
 selectedrows = np.array([], dtype = np.int64)
 selectedcolumns = np.array([], dtype = np.int64)
 shortlistedrows = np.array([], dtype = np.int64)
 shortlistedcolumns = np.array([], dtype = np.int64)
-finalimage = np.array([], dtype = np.int64)
 
-blackwhite_image = BlackWhite(image)
+blackwhite_image = BlackWhite(inputimage)
 top_border, bottom_border, left_border, right_border = FindBorder(blackwhite_image)
-if(top_border == -1 or bottom_border == -1 or left_border == -1 or right_border == -1):
-    print('Error:Not able to find the border')
-    exit()
-
 sizeBV, sizeBH = FindSizeB(blackwhite_image, top_border, bottom_border, left_border, right_border)
 sizeBV_half = sizeBV // 2
 sizeBH_half = sizeBH // 2
-
-if(sizeBV == -1 or sizeBH == -1):
-    print('Error:Not able to find the size of Black')
-    exit()
-
 top_borderin = top_border + sizeBV
 bottom_borderin = bottom_border - sizeBV
 left_borderin = left_border + sizeBH
@@ -35,19 +25,17 @@ shortlistedrows = ShortlistedRows(selectedrows, sizeBV_half, top_border, top_bor
 shortlistedcolumns = ShortlistedColumns(selectedcolumns, sizeBH_half, left_border, left_borderin, right_border, right_borderin)
 
 preprocessed = CreateImage(blackwhite_image, shortlistedrows, shortlistedcolumns)
-cv2.imwrite('output1.jpg', preprocessed)
+#cv2.imwrite('preprocessed.jpg', preprocessed)
 
 start_row, start_column, end_row, end_column = FindEnEx(preprocessed)
-if(start_row == -1 or start_column == -1 or end_row == -1 or end_column == -1):
-    print('Error:Not able to find entry and exit')
-    exit()
+
 
 solution_ip = preprocessed // 255
 solution_ip = 1 - solution_ip
 input_height, input_width = solution_ip.shape
 SIZE = input_height
 solution = [[0]*SIZE for _ in range(SIZE)]
-
+    
 def solvemaze(r, c):
     #if destination is reached, maze is solved
     #destination is the last cell(maze[SIZE-1][SIZE-1])
@@ -85,7 +73,7 @@ if(solvemaze(start_row,start_column)):
                 preprocessed[row][column] = 128
                     
     arr = np.array(preprocessed) 
-    cv2.imwrite('output2.jpg', preprocessed)
+    cv2.imwrite('outputimage.jpg', preprocessed)
 else:
     print ("No solution")
 
